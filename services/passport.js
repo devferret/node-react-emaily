@@ -22,7 +22,8 @@ passport.use(
     new GoogleStrategy({
         clientID: keys.googleCilentID,
         clientSecret: keys.googleCilentSecret,
-        callbackURL: '/auth/google/callback'
+        callbackURL: '/auth/google/callback',
+        proxy: true
     }, (accessToken, refreshToken, profile, done) => {
         // Check exist user before add new one
         User.findOne({ googleId: profile.id }).then(
