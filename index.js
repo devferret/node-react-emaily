@@ -3,7 +3,12 @@ const app = express()
 
 // Express path and adjust request, response
 app.get('/', (req, res) => {
-    res.send({ hello : 'world' })
+    res.send(
+        { 
+            hello : 'world',
+            bye: 'bye' 
+        }
+    )
 })
 
 // Dynamic PORT binding
