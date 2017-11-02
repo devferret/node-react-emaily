@@ -4,7 +4,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        Hi, There !
+        <button className="button is-primary" href="/auth/google">Log In !</button>
       </div>
     )
   }
