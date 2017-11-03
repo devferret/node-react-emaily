@@ -5,11 +5,12 @@ const mongoose = require('mongoose')
 
 const User = mongoose.model('users')
 
-// Encoding user for deserialize
+// Encypt user for pass to session
 passport.serializeUser((user, done) => {
     done(null, user.id)
 })
 
+// Decypt User by id
 passport.deserializeUser((id, done) => {
     User.findById(id).then((user) => {
         done(null, user)
@@ -25,7 +26,7 @@ passport.use(
         callbackURL: '/auth/google/callback',
         proxy: true
     }, (accessToken, refreshToken, profile, done) => {
-        // Check exist user before add new one
+        // Check exist user in MongoDB before add the new one
         User.findOne({ googleId: profile.id }).then(
             existingUser => {
                 if (existingUser) {
