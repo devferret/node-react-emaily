@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 
 const User = mongoose.model('users')
 
-// Encoding user for deserialize
+// Encoding user
 passport.serializeUser((user, done) => {
     done(null, user.id)
 })
@@ -16,34 +16,28 @@ passport.deserializeUser((id, done) => {
     })
 })
 
-// Tell Google we need access with Passport
-// By define Google strategy
+/*  Tell Google we need access with Passport
+    by define Google strategy */
 passport.use(
     new GoogleStrategy({
         clientID: keys.googleCilentID,
         clientSecret: keys.googleCilentSecret,
         callbackURL: '/auth/google/callback',
         proxy: true
-    }, (accessToken, refreshToken, profile, done) => {
-        // Check exist user before add new one
-        User.findOne({ googleId: profile.id }).then(
-            (existingUser) => {
-                if (existingUser) {
-                    // We alresdy have this user ID
-                    done(null, existingUser)
-                } else {
-                    // We have no this user ID
-                    new User({
-                        googleId: profile.id,
-                        name: profile.displayName,
-                        email: profile.emails[0].value
-                    })
-                    .save()
-                    .then(
-                        (user) => { done(null, user) }
-                    )
-                }
-            }
-        )
+    }, async (accessToken, refreshToken, profile, done) => {
+        
+        const existingUser = await User.findOne({ googleId: profile.id })
+        
+        if (existingUser) {
+            return done(null, existingUser)
+        }
+        
+        const user = await new User({
+            googleId: profile.id,
+            name: profile.displayName,
+            email: profile.emails[0].value
+        }).save()
+        
+        done(null, user)
     })
 )
